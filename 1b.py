@@ -24,28 +24,25 @@ def role_bonus(team):
     has_opener = any("opener" in p["strengths"] for p in team)
     has_bowler = any("death_bowling" in p["strengths"] or "swing_bowling" in p["strengths"] or "spin_bowling" in p["strengths"] or "leg_spin" in p["strengths"] for p in team)
     has_finisher = any("finisher" in p["strengths"] for p in team)
+    has_wicketkeeper = any("wicketkeeping" in p["strengths"] for p in team)
     bonus = 0
     if has_opener: bonus += 1
     if has_bowler: bonus += 1
     if has_finisher: bonus += 1
+    if has_wicketkeeper: bonus += 1
     return bonus
+
 
 
 def team_score(team):
     strengths = set()
     weaknesses = set()
-    has_keeper = False
 
     for player in team:
         strengths |= player["strengths"]
         weaknesses |= player["weaknesses"]
-        if "wicketkeeping" in player["strengths"]:
-            has_keeper = True
-
+        
     score = len(strengths) - len(weaknesses)
-
-    if has_keeper:
-        score += 1
 
     score += role_bonus(team)
     score += weakness_penalty(weaknesses)
@@ -65,7 +62,7 @@ def best_team(players, k):
             best_combination = (combo, strengths, weaknesses)
     return best_combination, best_score
 
-team, score = best_team(players, 4)
+team, score = best_team(players, 3)
 print("Best Team:")
 print([p["name"] for p in team[0]])
 print(f"Net Score: {score}")
